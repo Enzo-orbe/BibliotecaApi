@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using BibliotecaApi.Dtos;
 using BibliotecaApi.Models;
+using BibliotecaApi.QueryFilters;
 using BibliotecaApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,7 +64,8 @@ namespace BibliotecaApi.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("/user/{id}")]
         public async Task<ActionResult> UpdateUser(int id, UpdateUsersDto updateUsersDto)
         {
             Users users = new()
@@ -82,7 +84,8 @@ namespace BibliotecaApi.Controllers
             return Ok();
         }
 
-        [HttpPut("/accept/{id}")]
+        [HttpPut]
+        [Route("/accept/{id}")]
         public async Task<ActionResult> UpdateUserActive(int id, UpdateUserActiveDto updateUserActiveDto)
         {
             var data = await _userRepository.Get(id);
@@ -103,10 +106,39 @@ namespace BibliotecaApi.Controllers
             return Ok();
         }
 
-        [HttpGet("/login/{UserNumberOfDocument}")]
-        public async Task<ActionResult<Users>> GetUserLogin(int UserNumberOfDocument)
+        [HttpPut]
+        [Route("/retiro/{id}")]
+        public async Task<ActionResult> UpdateUserLibros(int id, UserLibrosRetiradosDto userLibrosRetiradosDto)
         {
-            var user = await _userRepository.GetByNumberOfDocument(UserNumberOfDocument);
+            var data = await _userRepository.Get(id);
+            if (data.UserLibrosRetirados + userLibrosRetiradosDto.UserLibrosRetirados <= 3 || 17 > 18)
+            {
+                Users users = new()
+                {
+                    UserId = data.UserId,
+                    UserName = data.UserName,
+                    UserDateYear = data.UserDateYear,
+                    UserLastName = data.UserLastName,
+                    UserLibrosRetirados = data.UserLibrosRetirados + userLibrosRetiradosDto.UserLibrosRetirados,
+                    UserPin = data.UserPin,
+                    UserRol = data.UserRol,
+                    UserNumberOfDocument = data.UserNumberOfDocument,
+                    UserActive = data.UserActive,
+                };
+
+                await _userRepository.Update(users);
+                return Ok(users);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("/filtered")]
+        public async Task<ActionResult<Users>> GetUserLogin([FromQuery] UsersQueryFilters filters)
+        {
+            var user = await _userRepository.GetAllFilters(filters);
 
             if (user == null)
                 return NotFound();
