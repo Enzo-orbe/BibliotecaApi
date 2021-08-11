@@ -12,6 +12,9 @@ namespace BibliotecaApi.Repositories
         Task Add(Users users);
         Task Delete(int id);
 
+
+        Task<Users> GetByNumberOfDocument(int UserNumberOfDocument);
+
         Task Update(Users users);
     }
 }

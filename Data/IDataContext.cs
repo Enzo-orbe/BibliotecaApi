@@ -12,6 +12,5 @@ namespace BibliotecaApi.Data
         DbSet<Users> Users { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
-
     }
 }

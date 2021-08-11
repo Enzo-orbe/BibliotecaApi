@@ -27,7 +27,7 @@ namespace BibliotecaApi.Models
         public DateTime UserDateYear { get; set; }
 
         [Required(ErrorMessage = "Debe ingresar un numero de documento")]
-        public string UserNumberOfDocument { get; set; }
+        public int UserNumberOfDocument { get; set; }
 
         [Required(ErrorMessage = "Debe ingresar un Rol de usuario")]
         // [EnumDataType(["Socio", "Admin"])]

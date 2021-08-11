@@ -81,5 +81,37 @@ namespace BibliotecaApi.Controllers
             await _userRepository.Update(users);
             return Ok();
         }
+
+        [HttpPut("/accept/{id}")]
+        public async Task<ActionResult> UpdateUserActive(int id, UpdateUserActiveDto updateUserActiveDto)
+        {
+            var data = await _userRepository.Get(id);
+            Users users = new()
+            {
+                UserId = data.UserId,
+                UserName = data.UserName,
+                UserDateYear = data.UserDateYear,
+                UserLastName = data.UserLastName,
+                UserLibrosRetirados = data.UserLibrosRetirados,
+                UserPin = data.UserPin,
+                UserRol = data.UserRol,
+                UserNumberOfDocument = data.UserNumberOfDocument,
+                UserActive = updateUserActiveDto.UserActive,
+            };
+
+            await _userRepository.Update(users);
+            return Ok();
+        }
+
+        [HttpGet("/login/{UserNumberOfDocument}")]
+        public async Task<ActionResult<Users>> GetUserLogin(int UserNumberOfDocument)
+        {
+            var user = await _userRepository.GetByNumberOfDocument(UserNumberOfDocument);
+
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
+        }
     }
 }

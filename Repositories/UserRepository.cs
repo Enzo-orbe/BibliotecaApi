@@ -43,6 +43,7 @@ namespace BibliotecaApi.Repositories
         public async Task Update(Users users)
         {
             var itemToUpdate = await _context.Users.FindAsync(users.UserId);
+            System.Console.Write(itemToUpdate);
             if (itemToUpdate == null)
             {
                 throw new System.NullReferenceException();
@@ -59,6 +60,12 @@ namespace BibliotecaApi.Repositories
                 itemToUpdate.UserActive = users.UserActive;
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<Users> GetByNumberOfDocument(int UserNumberOfDocument)
+        {
+            var user = await _context.Users.FindAsync(UserNumberOfDocument);
+            return user;
         }
     }
 }
