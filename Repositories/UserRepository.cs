@@ -38,6 +38,12 @@ namespace BibliotecaApi.Repositories
             return await _context.Users.FindAsync(id);
         }
 
+
+        public async Task<Users> GetNumberDocument(int UserNumberOfDocument)
+        {
+            return await _context.Users.Where(x => x.UserNumberOfDocument == UserNumberOfDocument).FirstAsync();
+        }
+
         public async Task<IEnumerable<Users>> GetAllFilters(UsersQueryFilters filters)
         {
             return await _context.Users.Where(x => x.UserNumberOfDocument == filters.UserNumberOfDocument).ToListAsync();

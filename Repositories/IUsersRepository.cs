@@ -9,6 +9,7 @@ namespace BibliotecaApi.Repositories
     {
 
         Task<Users> Get(int id);
+        Task<Users> GetNumberDocument(int UserNumberOfDocument);
         Task<IEnumerable<Users>> GetAllFilters(UsersQueryFilters filters);
         Task<IEnumerable<Users>> GetAll();
         Task Add(Users users);
