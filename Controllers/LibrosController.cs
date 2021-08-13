@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BibliotecaApi.Dtos;
 using BibliotecaApi.Models;
 using BibliotecaApi.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BibliotecaApi.Controllers
@@ -19,6 +20,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpGet("{id}")]
+
         public async Task<ActionResult<Libros>> GetLibros(int id)
         {
             var libros = await _librosRepository.Get(id);
@@ -29,6 +31,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpGet]
+
         public async Task<ActionResult<IEnumerable<Libros>>> GetLibros()
         {
             var libros = await _librosRepository.GetAll();
@@ -38,6 +41,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> CreateLibros(CreateLibrosDto createLibrosDto)
         {
             Libros libros = new()
@@ -55,6 +59,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult> DeleteLibro(int id)
         {
             await _librosRepository.Delete(id);
@@ -62,6 +67,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<ActionResult> UpdateLibro(int id, UpdateLibrosDto updateLibrosDto)
         {
             Libros libros = new()

@@ -5,6 +5,7 @@ using BibliotecaApi.Dtos;
 using BibliotecaApi.Models;
 using BibliotecaApi.QueryFilters;
 using BibliotecaApi.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BibliotecaApi.Controllers
@@ -20,6 +21,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Users>> GetUser(int id)
         {
             var user = await _userRepository.Get(id);
@@ -30,6 +32,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
             var users = await _userRepository.GetAll();
@@ -39,6 +42,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> CreateUser(CreateUsersDto createUsersDto)
         {
             Users users = new()
@@ -58,6 +62,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult> DeleteUser(int id)
         {
             await _userRepository.Delete(id);
@@ -66,6 +71,7 @@ namespace BibliotecaApi.Controllers
 
         [HttpPut]
         [Route("/user/{id}")]
+        [Authorize]
         public async Task<ActionResult> UpdateUser(int id, UpdateUsersDto updateUsersDto)
         {
             Users users = new()
@@ -86,6 +92,7 @@ namespace BibliotecaApi.Controllers
 
         [HttpPut]
         [Route("/accept/{id}")]
+        [Authorize]
         public async Task<ActionResult> UpdateUserActive(int id, UpdateUserActiveDto updateUserActiveDto)
         {
             var data = await _userRepository.Get(id);
@@ -108,6 +115,7 @@ namespace BibliotecaApi.Controllers
 
         [HttpPut]
         [Route("/retiro/{id}")]
+        [Authorize]
         public async Task<ActionResult> UpdateUserLibros(int id, UserLibrosRetiradosDto userLibrosRetiradosDto)
         {
             var data = await _userRepository.Get(id);
@@ -136,6 +144,7 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpGet("/filtered")]
+        [Authorize]
         public async Task<ActionResult<Users>> GetUserLogin([FromQuery] UsersQueryFilters filters)
         {
             var user = await _userRepository.GetAllFilters(filters);

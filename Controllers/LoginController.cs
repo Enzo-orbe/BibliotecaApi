@@ -1,4 +1,5 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using BibliotecaApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BibliotecaApi.Controllers
 {
@@ -17,16 +19,14 @@ namespace BibliotecaApi.Controllers
     {
 
         private readonly IUsersRepository _userRepository;
-        public LoginController(IUsersRepository usersRepository)
+        private readonly IConfiguration configuration;
+
+        public LoginController(IUsersRepository usersRepository, IConfiguration configuration)
         {
             _userRepository = usersRepository;
-        }
-
-        private readonly IConfiguration configuration;
-        public LoginController(IConfiguration configuration)
-        {
             this.configuration = configuration;
         }
+
 
         // POST: api/Login
         [HttpPost]
@@ -80,21 +80,20 @@ namespace BibliotecaApi.Controllers
 
             // CREAMOS LOS CLAIMS //
             var _Claims = new[] {
-                new Claim(JwtRegisteredClaimNames., Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.UserPin, userInfo.UserPin),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserPin),
                 new Claim("nombre", userInfo.UserName),
                 new Claim("apellidos", userInfo.UserLastName),
-                new Claim(JwtRegisteredClaimNames.UserNumberOfDocument, userInfo.UserNumberOfDocument),
+                // new Claim(JwtRegisteredClaimNames.Email, userInfo.UserNumberOfDocument),
                 new Claim(userInfo.UserRol, userInfo.UserRol)
             };
 
-            // CREAMOS EL PAYLOAD //
+
             var _Payload = new JwtPayload(
                     issuer: configuration["JWT:Issuer"],
                     audience: configuration["JWT:Audience"],
                     claims: _Claims,
                     notBefore: DateTime.UtcNow,
-                    // Exipra a la 24 horas.
                     expires: DateTime.UtcNow.AddHours(24)
                 );
 
