@@ -95,9 +95,12 @@ namespace BibliotecaApi.Controllers
         public async Task<ActionResult> UpdateUserActive(int id, UpdateUserActiveDto updateUserActiveDto)
         {
            
-            var jwt = Request.Headers["Authorization"];
            
-            System.Console.WriteLine( jwt );
+            var stream = Request.Headers["Authorization"];  
+            var handler = new JwtSecurityTokenHandler();
+            var toksss =  stream.ToString().Replace("Bearer ", string.Empty);
+            var jsonToken = handler.ReadToken(toksss);           
+            System.Console.WriteLine( jsonToken );
             var data = await _userRepository.Get(id);
             Users users = new()
             {
