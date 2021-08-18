@@ -32,7 +32,6 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
             var users = await _userRepository.GetAll();
@@ -42,7 +41,6 @@ namespace BibliotecaApi.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult> CreateUser(CreateUsersDto createUsersDto)
         {
             Users users = new()
@@ -93,7 +91,7 @@ namespace BibliotecaApi.Controllers
         [HttpPut]
         [Route("/accept/{id}")]
         [Authorize]
-        public async Task<ActionResult> UpdateUserActive(int id, UpdateUserActiveDto updateUserActiveDto)
+        public async Task<ActionResult> UpdateUserActive([FromHeader] string Authorization,int id, UpdateUserActiveDto updateUserActiveDto)
         {
             var data = await _userRepository.Get(id);
             Users users = new()

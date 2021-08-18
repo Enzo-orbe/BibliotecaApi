@@ -1,8 +1,8 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\enzo\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\enzo\\.nuget\\packages"
+      "C:\\Users\\Enzo.Orbe\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Enzo.Orbe\\.nuget\\packages"
     ]
   }
 }
