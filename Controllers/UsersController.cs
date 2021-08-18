@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using BibliotecaApi.Dtos;
 using BibliotecaApi.Models;
@@ -91,8 +92,12 @@ namespace BibliotecaApi.Controllers
         [HttpPut]
         [Route("/accept/{id}")]
         [Authorize]
-        public async Task<ActionResult> UpdateUserActive([FromHeader] string Authorization,int id, UpdateUserActiveDto updateUserActiveDto)
+        public async Task<ActionResult> UpdateUserActive(int id, UpdateUserActiveDto updateUserActiveDto)
         {
+           
+            var jwt = Request.Headers["Authorization"];
+           
+            System.Console.WriteLine( jwt );
             var data = await _userRepository.Get(id);
             Users users = new()
             {

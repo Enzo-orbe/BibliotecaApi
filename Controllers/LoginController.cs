@@ -82,10 +82,11 @@ namespace BibliotecaApi.Controllers
             var _Claims = new[] {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserPin),
+                new Claim("id", userInfo.UserId.ToString()),
+                new Claim("documento", userInfo.UserNumberOfDocument.ToString()),
                 new Claim("nombre", userInfo.UserName),
                 new Claim("apellidos", userInfo.UserLastName),
-                // new Claim(JwtRegisteredClaimNames.Email, userInfo.UserNumberOfDocument),
-                new Claim(userInfo.UserRol, userInfo.UserRol)
+                new Claim(userInfo.UserRol, userInfo.UserRol),
             };
 
 

@@ -2,6 +2,7 @@ namespace BibliotecaApi.Models
 {
     public class UserInfo
     {
+        public int UserId {get; set; }
         public string UserName { get; set; }
         public string UserLastName { get; set; }
         public System.DateTime UserDateYear { get; set; }
