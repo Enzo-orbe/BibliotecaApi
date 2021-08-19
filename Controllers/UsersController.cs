@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using BibliotecaApi.Dtos;
 using BibliotecaApi.Models;
@@ -8,6 +11,8 @@ using BibliotecaApi.QueryFilters;
 using BibliotecaApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BibliotecaApi.Controllers
 {
@@ -16,9 +21,11 @@ namespace BibliotecaApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersRepository _userRepository;
-        public UsersController(IUsersRepository usersRepository)
+        private readonly IConfiguration configuration;
+        public UsersController(IUsersRepository usersRepository, IConfiguration configuration)
         {
             _userRepository = usersRepository;
+            this.configuration = configuration;
         }
 
         [HttpGet("{id}")]
@@ -96,27 +103,40 @@ namespace BibliotecaApi.Controllers
         {
            
            
-            var stream = Request.Headers["Authorization"];  
+            var stream = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();;  
             var handler = new JwtSecurityTokenHandler();
-            var toksss =  stream.ToString().Replace("Bearer ", string.Empty);
-            var jsonToken = handler.ReadToken(toksss);           
-            System.Console.WriteLine( jsonToken );
-            var data = await _userRepository.Get(id);
-            Users users = new()
-            {
-                UserId = data.UserId,
-                UserName = data.UserName,
-                UserDateYear = data.UserDateYear,
-                UserLastName = data.UserLastName,
-                UserLibrosRetirados = data.UserLibrosRetirados,
-                UserPin = data.UserPin,
-                UserRol = data.UserRol,
-                UserNumberOfDocument = data.UserNumberOfDocument,
-                UserActive = updateUserActiveDto.UserActive,
-            };
+            var key = Encoding.ASCII.GetBytes(configuration["JWT:ClaveSecreta"]);
+            handler.ValidateToken(stream, new TokenValidationParameters{
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);   
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var accountId = jwtToken.Claims.First(x => x.Type == "documento").Value;       
+            var user = await _userRepository.GetNumberDocument(Int32.Parse(accountId));
+            if(user.UserRol == "Admin"){
+                var data = await _userRepository.Get(id);
+                Users users = new()
+                {
+                    UserId = data.UserId,
+                    UserName = data.UserName,
+                    UserDateYear = data.UserDateYear,
+                    UserLastName = data.UserLastName,
+                    UserLibrosRetirados = data.UserLibrosRetirados,
+                    UserPin = data.UserPin,
+                    UserRol = data.UserRol,
+                    UserNumberOfDocument = data.UserNumberOfDocument,
+                    UserActive = updateUserActiveDto.UserActive,
+                };
 
-            await _userRepository.Update(users);
-            return Ok();
+                await _userRepository.Update(users);
+                return Ok();
+            } else {
+                return NotFound();
+            }
+            
         }
 
         [HttpPut]
